@@ -35,7 +35,7 @@ def load_bars(min_rows=6000):
     return f(C), f(V), f(H), f(L), f(O)
 
 
-def build(h: int, funding: bool = False):
+def build(h: int, funding: bool = False, delay: int = 0, target: str = "demean"):
     C, V, H, L, O = load_bars()
     idx = C.index
     r1 = np.log(C).diff()
@@ -80,8 +80,13 @@ def build(h: int, funding: bool = False):
         F["fund_rk"] = FD.rank(axis=1, pct=True)
         F["fund_mkt"] = pd.DataFrame({c: FD.mean(axis=1) for c in C.columns}, index=idx)
         F["fund_x_r24"] = F["fund_rk"] * F["r24_rk"]
-    fwd = np.log(C.shift(-h)) - np.log(C)
-    tgt = fwd.sub(fwd.mean(axis=1), axis=0)
+    fwd = np.log(C.shift(-h - delay)) - np.log(C.shift(-delay))  # delay=1: act on next bar, no same-bar fill
+    if target == "beta":  # G-Research style: residualise vs market with rolling beta
+        mf = fwd.mean(axis=1)
+        b = r1.rolling(336, min_periods=250).cov(mkt).div(mkt.rolling(336, min_periods=250).var(), axis=0)
+        tgt = fwd - b.mul(mf, axis=0)
+    else:
+        tgt = fwd.sub(fwd.mean(axis=1), axis=0)
     rows = []
     for c in C.columns:
         d = pd.DataFrame({k: v[c] for k, v in F.items()})
