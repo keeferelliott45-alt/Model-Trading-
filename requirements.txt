@@ -8,3 +8,4 @@ pyyaml
 lightgbm
 scikit-learn
 xlrd
+pyarrow
