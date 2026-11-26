@@ -14,3 +14,11 @@ Edit `config/basket.yaml` to change tickers, lookbacks, horizons.
 
 ## Phase 3 result (free positioning data)
 Deribit funding-rate (BTC/ETH) added as a regressor and as a crowding filter: 144 tests, 6 raw-significant (~7 by chance), all continuation; **0 survive FDR/Bonferroni**. See `reports/phase3_report.md`. Whale-flow (paid/keyed APIs) not built — gate not justified by results.
+
+## Research loop (hypothesis -> test -> new connector -> repeat)
+`research/` + `data_connectors/macro.py`: 59 free series (FRED rates/credit/liquidity/EPU, Caldara-Iacoviello GPR geopolitics, VIX/DXY/oil/copper/defense/semis, Fear&Greed, Deribit funding+DVOL, CoinMetrics exchange flows/MVRV/supply, stablecoin supply, CFTC managed-money COT). Every hypothesis tested is logged in `reports/ledger.csv` with global BH/Bonferroni correction.
+- E1 crypto "after the move" event study (BTC/ETH x whale flow/MVRV/funding/sentiment/halving cycle): candidate = shock **continuation**.
+- E2 walk-forward LightGBM on 280 features, 10 assets: **no OOS skill** (IC ~0).
+- E3 replication of E1 on 19 other coins, BTC-neutral: 5d surges continue (+7.8% over 20d, p=0.0001, 17/19 coins). Survivorship-biased.
+- E4 tradable test (long alt / short BTC, 40bps costs): positive but dominated by 2021/2024; 2025-26 negative.
+- E5 regime split: edge present only when BTC > 200d MA.
