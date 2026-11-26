@@ -27,3 +27,7 @@ Deribit funding-rate (BTC/ETH) added as a regressor and as a crowding filter: 14
 Tables: `series` (683 numeric series), `snapshots` (option term/skew, strike magnets, Polymarket odds), `events` (headlines), `signals` (every call, win or loss), `hypotheses`, `ledger_tests`, `notes` (lessons/dead ends), `sources` (catalog + status + limits), `collector_runs` (health). Raw API payloads archived gz under `data/raw/`.
 Live collectors capture what can never be backfilled: Deribit option book, Hyperliquid/Bitget/OKX funding+OI+basis, BTC order-book depth, Polymarket odds, mempool/Blockchair, headlines; daily CFTC TFF.
 Run: `python scripts/collect.py --backfill && python scripts/seed_knowledge.py` (then hourly `python scripts/collect.py`).
+
+## Hourly pooled model (E7) - Kaggle/G-Research pattern
+`collectors/bars.py` (45 Bitget perps, 2.5y hourly) + `research/hourly.py` (27 continuous crypto perps, 38 features, market-neutral target, purged walk-forward, noise augmentation).
+OOS IC 0.024 at 6h (t=4.0, n=1772) and 0.035 at 24h (t=3.3): first statistically real predictability found. Naive top/bottom-5 at 24bps full-turnover cost nets ~0. With turnover control/conviction filter: 6h k=3 maker cost Sharpe 0.3 (first half OOS) -> 2.2 (second half); 24h conviction-filtered at 6bps taker 0.4 -> 1.15. Config chosen from 72 tries; treat as hypothesis until forward-tested. Results: `reports/hourly_portfolio_grid.csv`.
