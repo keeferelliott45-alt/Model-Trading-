@@ -31,3 +31,9 @@ Run: `python scripts/collect.py --backfill && python scripts/seed_knowledge.py` 
 ## Hourly pooled model (E7) - Kaggle/G-Research pattern
 `collectors/bars.py` (45 Bitget perps, 2.5y hourly) + `research/hourly.py` (27 continuous crypto perps, 38 features, market-neutral target, purged walk-forward, noise augmentation).
 OOS IC 0.024 at 6h (t=4.0, n=1772) and 0.035 at 24h (t=3.3): first statistically real predictability found. Naive top/bottom-5 at 24bps full-turnover cost nets ~0. With turnover control/conviction filter: 6h k=3 maker cost Sharpe 0.3 (first half OOS) -> 2.2 (second half); 24h conviction-filtered at 6bps taker 0.4 -> 1.15. Config chosen from 72 tries; treat as hypothesis until forward-tested. Results: `reports/hourly_portfolio_grid.csv`.
+
+## Scope-restricted results (BTC, ETH + target basket only)
+- E8 BTC/ETH-only ablation (price / exchange-flow whale proxy / cycle / derivs / sentiment / macro): nothing significant (best perm p 0.07).
+- E9 pooled daily basket model (11 assets): cross-sectional IC ~0; per-asset hits equal chance.
+- E10 pooled hourly basket model (17 perps incl. stock/commodity proxies): 6h IC 0.024 (t=2.3) but ~0.5bps gross per rebalance; 24h/72h nothing.
+Conclusion: with free data, no tradable predictor found on the target universe. The only real signal (E7 hourly pooled) lives in random alt coins, which are out of scope.

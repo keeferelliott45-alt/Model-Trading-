@@ -14,11 +14,16 @@ warnings.filterwarnings("ignore")
 BARS = Path(__file__).resolve().parents[1] / "data" / "bars"
 
 
+UNIVERSE = None  # set to a list of symbols (e.g. target basket) to restrict the pool
+
+
 def load_bars(min_rows=6000):
     C, V, H, L, O = {}, {}, {}, {}, {}
     for f in glob.glob(str(BARS / "*.parquet")):
         d = pd.read_parquet(f)
         s = Path(f).stem.replace("USDT", "")
+        if UNIVERSE is not None and s not in UNIVERSE:
+            continue
         if len(d) < min_rows:
             continue
         d = d[~d.index.duplicated()]
