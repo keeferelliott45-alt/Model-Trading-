@@ -1,0 +1,31 @@
+# Cross-Asset Overreaction Trading System — basket & test grid config
+# Edit this file to change tickers, windows, horizons. Nothing below is hardcoded elsewhere.
+
+risk_on:
+  - BTC-USD
+  - ETH-USD
+  - CRWV
+  - MU
+  - AMD
+  - AVGO
+  - CEG
+  - FCX
+
+risk_off:
+  - GLD
+  - SLV
+  - DLR
+
+regime_window_days: 252
+
+lookback_windows: [30, 60, 90, 180]
+holding_horizons: [1, 3, 5, 10, 20, 60]
+
+residual_sigma_threshold: 2.0
+
+fdr_alpha: 0.05
+
+history_start: "2018-01-01"
+
+cache_dir: "cache"
+cache_max_age_hours: 20
