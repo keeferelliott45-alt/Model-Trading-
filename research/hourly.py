@@ -30,7 +30,7 @@ def load_bars(min_rows=6000):
     return f(C), f(V), f(H), f(L), f(O)
 
 
-def build(h: int):
+def build(h: int, funding: bool = False):
     C, V, H, L, O = load_bars()
     idx = C.index
     r1 = np.log(C).diff()
@@ -62,6 +62,19 @@ def build(h: int):
     hr = idx.hour.to_numpy()
     F["h_sin"] = pd.DataFrame({c: np.sin(2 * np.pi * hr / 24) for c in C.columns}, index=idx)
     F["h_cos"] = pd.DataFrame({c: np.cos(2 * np.pi * hr / 24) for c in C.columns}, index=idx)
+    if funding:
+        FD = {}
+        for f in glob.glob(str(BARS.parent / "funding" / "*.parquet")):
+            c = Path(f).stem
+            if c in C.columns:
+                FD[c] = pd.read_parquet(f).fundingRate
+        FD = pd.DataFrame(FD).reindex(idx.union(pd.DataFrame(FD).index)).sort_index().ffill(limit=12).reindex(idx).reindex(columns=C.columns) * 1e4
+        F["fund"] = FD
+        F["fund_z"] = (FD - FD.rolling(336, min_periods=200).mean()) / FD.rolling(336, min_periods=200).std()
+        F["fund_chg24"] = FD - FD.shift(24)
+        F["fund_rk"] = FD.rank(axis=1, pct=True)
+        F["fund_mkt"] = pd.DataFrame({c: FD.mean(axis=1) for c in C.columns}, index=idx)
+        F["fund_x_r24"] = F["fund_rk"] * F["r24_rk"]
     fwd = np.log(C.shift(-h)) - np.log(C)
     tgt = fwd.sub(fwd.mean(axis=1), axis=0)
     rows = []
