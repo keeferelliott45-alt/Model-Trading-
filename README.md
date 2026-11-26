@@ -22,3 +22,8 @@ Deribit funding-rate (BTC/ETH) added as a regressor and as a crowding filter: 14
 - E3 replication of E1 on 19 other coins, BTC-neutral: 5d surges continue (+7.8% over 20d, p=0.0001, 17/19 coins). Survivorship-biased.
 - E4 tradable test (long alt / short BTC, 40bps costs): positive but dominated by 2021/2024; 2025-26 negative.
 - E5 regime split: edge present only when BTC > 200d MA.
+
+## Information store (`data/info.db`, local; not committed)
+Tables: `series` (683 numeric series), `snapshots` (option term/skew, strike magnets, Polymarket odds), `events` (headlines), `signals` (every call, win or loss), `hypotheses`, `ledger_tests`, `notes` (lessons/dead ends), `sources` (catalog + status + limits), `collector_runs` (health). Raw API payloads archived gz under `data/raw/`.
+Live collectors capture what can never be backfilled: Deribit option book, Hyperliquid/Bitget/OKX funding+OI+basis, BTC order-book depth, Polymarket odds, mempool/Blockchair, headlines; daily CFTC TFF.
+Run: `python scripts/collect.py --backfill && python scripts/seed_knowledge.py` (then hourly `python scripts/collect.py`).

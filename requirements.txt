@@ -5,3 +5,6 @@ statsmodels
 yfinance
 requests
 pyyaml
+lightgbm
+scikit-learn
+xlrd
