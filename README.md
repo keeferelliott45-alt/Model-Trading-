@@ -37,3 +37,6 @@ OOS IC 0.024 at 6h (t=4.0, n=1772) and 0.035 at 24h (t=3.3): first statistically
 - E9 pooled daily basket model (11 assets): cross-sectional IC ~0; per-asset hits equal chance.
 - E10 pooled hourly basket model (17 perps incl. stock/commodity proxies): 6h IC 0.024 (t=2.3) but ~0.5bps gross per rebalance; 24h/72h nothing.
 Conclusion: with free data, no tradable predictor found on the target universe. The only real signal (E7 hourly pooled) lives in random alt coins, which are out of scope.
+
+## E11 review (execution delay + reversal baseline + Kaggle-style target)
+`reports/e11_review.csv`. Only the alt-pool 24h model survives a 1-bar delay: IC 0.035 (t=3.4), net +29-31bps per rebalance, Sharpe 1.5-1.8; plain reversal IC drops to 0.011 (insignificant). Every 6h config and every target-basket config is a same-bar/reversal artifact that vanishes with delay. Kaggle G-Research scored on weighted Pearson of 15-min residualized returns; our honest delay-adjusted Pearson is ~0.016-0.021 at 24h.
